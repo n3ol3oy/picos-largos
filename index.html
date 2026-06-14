@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#061427">
+<title>Picos largos: la física detrás de la magia</title>
+<style>
+:root {
+  --bg:#061427; --panel:#0d203b; --panel2:#112948; --text:#f5f7fb; --muted:#aec0d6;
+  --cyan:#60f0ff; --pink:#ff4fd8; --lime:#a8ff60; --amber:#ffd166; --red:#ff6b6b;
+  --line:rgba(255,255,255,.13); --shadow:0 20px 70px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(96,240,255,.22), transparent 32%),
+    radial-gradient(circle at 82% 6%, rgba(255,79,216,.20), transparent 28%),
+    radial-gradient(circle at 50% 100%, rgba(168,255,96,.13), transparent 28%),
+    var(--bg);
+  color:var(--text); line-height:1.65; overflow-x:hidden;
+}
+body:before{
+  content:""; position:fixed; inset:0; pointer-events:none; opacity:.18;
+  background-image:linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);
+  background-size:42px 42px; mask-image:linear-gradient(to bottom, black, transparent 85%);
+}
+a{color:inherit}
+.wrap{width:min(1120px, calc(100% - 34px)); margin:auto}
+.hero{min-height:92vh; display:grid; place-items:center; padding:64px 0 30px; position:relative}
+.badge{display:inline-flex;gap:10px;align-items:center;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.07);color:var(--muted);backdrop-filter:blur(10px)}
+.ping{width:10px;height:10px;border-radius:50%;background:var(--lime);box-shadow:0 0 20px var(--lime)}
+h1{font-size:clamp(3rem,8vw,7.6rem);line-height:.92;margin:24px 0 18px;letter-spacing:-.08em;max-width:980px}
+.grad{background:linear-gradient(100deg,var(--cyan),#fff,var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{font-size:clamp(1.1rem,2.2vw,1.45rem);max-width:780px;color:#dbe7f7;margin-bottom:28px}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:26px;align-items:center}
+.panel{background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.045));border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);backdrop-filter:blur(16px)}
+.quick{padding:24px}
+.quick strong{color:var(--lime)}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+.btn{border:1px solid var(--line);border-radius:999px;padding:12px 18px;text-decoration:none;background:rgba(255,255,255,.08);font-weight:800}
+.btn.primary{background:linear-gradient(90deg,var(--cyan),var(--pink));color:#061427;border:0}
+.table-demo{position:relative;min-height:360px;overflow:hidden}
+.ball{position:absolute;width:46px;height:46px;border-radius:50%;background:radial-gradient(circle at 30% 28%,#fff,#d7fbff 45%,#77e6ee 65%,#1a7b8a);box-shadow:0 0 30px rgba(96,240,255,.55);animation:fly 3.2s ease-in-out infinite}
+.racket{position:absolute;width:34px;height:190px;border-radius:18px;background:linear-gradient(90deg,#111,#ef3e3e 48%,#ffd166 52%,#442b15);transform:rotate(-18deg);right:18%;top:90px;box-shadow:0 14px 30px rgba(0,0,0,.35)}
+.spin{position:absolute;left:18%;top:54%;color:var(--cyan);font-weight:900;font-size:64px;animation:spin 1.2s linear infinite}
+@keyframes fly{0%{left:10%;top:70%}45%{left:70%;top:34%}100%{left:10%;top:70%}}
+@keyframes spin{to{transform:rotate(360deg)}}
+nav{position:sticky;top:0;z-index:20;background:rgba(6,20,39,.74);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 0}
+.navlinks{display:flex;gap:8px;overflow:auto}
+.navlinks a{white-space:nowrap;text-decoration:none;color:var(--muted);font-weight:700;padding:8px 12px;border-radius:999px}
+.navlinks a:hover{background:rgba(255,255,255,.09);color:#fff}
+section{padding:70px 0}
+.kicker{color:var(--cyan);font-weight:900;letter-spacing:.14em;text-transform:uppercase;font-size:.78rem}
+h2{font-size:clamp(2rem,4vw,4rem);line-height:1;margin:.25em 0 .35em;letter-spacing:-.05em}
+.sub{font-size:1.12rem;color:var(--muted);max-width:760px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:28px}
+.mini{padding:22px;border-radius:24px;background:rgba(255,255,255,.07);border:1px solid var(--line)}
+.mini b{font-size:1.15rem;color:#fff}
+.mini span{display:block;color:var(--muted);margin-top:8px}
+.lab{display:grid;grid-template-columns:.88fr 1.12fr;gap:22px;align-items:start;margin-top:30px}
+.controls{padding:22px;position:sticky;top:78px}
+.controls button{width:100%;text-align:left;margin:8px 0;padding:14px 16px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--text);font-weight:850;cursor:pointer;font-size:.98rem}
+.controls button.active{background:linear-gradient(90deg,rgba(96,240,255,.25),rgba(255,79,216,.22));border-color:rgba(96,240,255,.5)}
+.viewer{padding:24px;min-height:620px}
+.viewer img{width:100%;border-radius:18px;background:#fff;border:1px solid rgba(255,255,255,.18)}
+.viewer h3{font-size:2rem;line-height:1.05;margin:14px 0 8px;color:#fff}
+.tagrow{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 18px}
+.tag{font-size:.78rem;font-weight:900;text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:5px 9px;color:var(--amber);background:rgba(255,209,102,.08)}
+.truth{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:24px}
+.truth div{padding:18px;border-radius:22px;background:rgba(255,255,255,.07);border:1px solid var(--line)}
+.truth b{color:var(--lime)}
+.quiz{padding:26px;margin-top:28px}
+.q{display:none}
+.q.active{display:block}
+.options{display:grid;gap:10px;margin-top:14px}
+.options button{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.06);color:var(--text);padding:14px;text-align:left;cursor:pointer;font-weight:750}
+.result{margin-top:15px;font-weight:900;min-height:28px}
+.good{color:var(--lime)} .bad{color:var(--red)}
+.footer{padding:52px 0 70px;text-align:center;color:var(--muted)}
+.morrie{font-size:1.1rem;color:#fff;font-weight:900}
+@media(max-width:860px){
+ .hero-grid,.lab,.cards,.truth{grid-template-columns:1fr}
+ .controls{position:relative;top:auto}
+ .hero{min-height:auto}
+ .table-demo{min-height:280px}
+ h1{font-size:clamp(3rem,16vw,5rem)}
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="wrap">
+    <strong>🏓 Picos largos</strong>
+    <div class="navlinks">
+      <a href="#idea">Idea</a><a href="#lab">Laboratorio</a><a href="#jugar">Cómo jugar</a><a href="#quiz">Mini test</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="badge"><span class="ping"></span> Guía visual rápida para el club</div>
+      <h1>La física detrás de <span class="grad">la bola muerta</span></h1>
+      <p class="lead">Los picos largos no son brujería. Son una forma brutalmente elegante de devolverle al rival su propio efecto, deformado, reducido o invertido.</p>
+      <div class="cta">
+        <a class="btn primary" href="#lab">Ver las 6 animaciones</a>
+        <a class="btn" href="#jugar">Cómo jugar contra ellos</a>
+      </div>
+    </div>
+    <div class="panel table-demo" aria-label="Animación decorativa de ping pong">
+      <div class="ball"></div><div class="racket"></div><div class="spin">↻</div>
+    </div>
+  </div>
+</header>
+
+<main>
+<section id="idea">
+  <div class="wrap">
+    <div class="kicker">La regla madre</div>
+    <h2>No crean magia. Responden al efecto.</h2>
+    <p class="sub">Piensa en los picos largos como una goma que no “agarra” la pelota como una lisa. Los picos se doblan, absorben parte de la energía y cambian la rotación que vuelve a tu lado.</p>
+    <div class="cards">
+      <div class="mini"><b>Topspin entra</b><span>Muchas veces vuelve como backspin. Por eso tu siguiente ataque se va a la red.</span></div>
+      <div class="mini"><b>Backspin entra</b><span>La devolución puede salir más flotante o rara, no necesariamente más cortada.</span></div>
+      <div class="mini"><b>Poco efecto entra</b><span>Normalmente vuelve poco efecto. La bola parece muerta: lenta, baja, incómoda.</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="lab">
+  <div class="wrap">
+    <div class="kicker">Laboratorio visual</div>
+    <h2>Seis situaciones clave</h2>
+    <p class="sub">Pulsa cada caso. La animación muestra qué pasa cuando la bola toca los picos.</p>
+    <div class="lab">
+      <aside class="panel controls">
+        <button class="active" data-case="0">1. Corte contra topspin</button>
+        <button data-case="1">2. Corte contra backspin</button>
+        <button data-case="2">3. Ataque contra backspin</button>
+        <button data-case="3">4. Ataque contra topspin</button>
+        <button data-case="4">5. Punch contra topspin</button>
+        <button data-case="5">6. Punch contra backspin</button>
+      </aside>
+      <article class="panel viewer">
+        <div class="tagrow"><span class="tag" id="tagA">Inversión</span><span class="tag" id="tagB">Lectura de efecto</span></div>
+        <h3 id="caseTitle">Corte contra topspin</h3>
+        <p id="caseText">Mandas una bola con topspin. El rival corta o bloquea con picos largos. La bola vuelve con backspin: no la levantes como si fuera una bola normal.</p>
+        <img id="caseGif" src="https://gregsttpages.com/wp-content/uploads/2018/05/lp_chop_vs_topspin_6.gif" alt="Animación de picos largos">
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="jugar">
+  <div class="wrap">
+    <div class="kicker">Plan práctico</div>
+    <h2>Cómo no morir contra picos largos</h2>
+    <p class="sub">El error típico es enfadarse con la goma. Error. La goma solo revela que no estabas leyendo tu propio efecto.</p>
+    <div class="truth">
+      <div><b>1. Empieza simple.</b><br>Usa bolas más planas y con menos efecto. Así recibes menos “sorpresa”.</div>
+      <div><b>2. No ataques automático.</b><br>Si acabas de meter mucho topspin, espera una bola cortada o muerta.</div>
+      <div><b>3. Mira la trayectoria.</b><br>Bola flotante = no necesita tanto levantamiento. Bola cortada = abre más la pala.</div>
+      <div><b>4. Cambia ritmo, no ego.</b><br>Lento, corto, profundo, plano. Hazle pensar. No le regales tu efecto favorito.</div>
+    </div>
+  </div>
+</section>
+
+<section id="quiz">
+  <div class="wrap">
+    <div class="kicker">Mini test</div>
+    <h2>¿Lo has pillado?</h2>
+    <div class="panel quiz">
+      <div class="q active">
+        <h3>Si haces mucho topspin y el rival bloquea con picos largos, ¿qué deberías esperar?</h3>
+        <div class="options">
+          <button data-ok="0">Una bola con más topspin todavía</button>
+          <button data-ok="1">Una bola cortada o muerta que puede caer a la red</button>
+          <button data-ok="0">Una bola igual que con goma lisa</button>
+        </div>
+      </div>
+      <div class="q">
+        <h3>¿Qué pasa si envías una bola casi sin efecto?</h3>
+        <div class="options">
+          <button data-ok="1">Normalmente vuelve con poco efecto</button>
+          <button data-ok="0">Siempre vuelve con muchísimo efecto</button>
+          <button data-ok="0">Siempre vuelve imposible de leer</button>
+        </div>
+      </div>
+      <div class="q">
+        <h3>La mejor primera estrategia contra picos largos es...</h3>
+        <div class="options">
+          <button data-ok="0">Atacar más fuerte cada bola</button>
+          <button data-ok="0">Quejarte de la pala</button>
+          <button data-ok="1">Bajar el efecto, variar el ritmo y leer la devolución</button>
+        </div>
+      </div>
+      <div class="result" id="result"></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <p class="morrie">Prepared by Morrie</p>
+    <p>Resumen educativo de una explicación técnica sobre picos largos. Hecho para aprender, jugar mejor y dejar de culpar a la goma.</p>
+  </div>
+</footer>
+
+<script>
+const cases = [
+  {
+    title:"Corte contra topspin",
+    text:"Mandas una bola con topspin. El rival corta o bloquea con picos largos. La bola vuelve con backspin: no la levantes como si fuera una bola normal.",
+    gif:"https://gregsttpages.com/wp-content/uploads/2018/05/lp_chop_vs_topspin_6.gif", tags:["Inversión","Topspin → Backspin"]
+  },
+  {
+    title:"Corte contra backspin",
+    text:"Mandas una bola cortada. Los picos se doblan y reducen parte del efecto. La pelota puede volver más flotante de lo que tu cerebro espera.",
+    gif:"https://gregsttpages.com/wp-content/uploads/2018/05/lp_chop_vs_backspin_1.gif", tags:["Reducción","Backspin"]
+  },
+  {
+    title:"Ataque contra backspin",
+    text:"Los picos largos también pueden atacar. Contra una bola cortada, el golpe puede salir bajo, plano y muy incómodo.",
+    gif:"https://gregsttpages.com/wp-content/uploads/2018/05/lp_loop_vs_backspin.gif", tags:["Ataque","Bola baja"]
+  },
+  {
+    title:"Ataque contra topspin",
+    text:"Contra topspin, el ataque con picos largos cambia la trayectoria y quita vida a la bola. No esperes el rebote limpio de una goma lisa.",
+    gif:"https://gregsttpages.com/wp-content/uploads/2018/05/lp_loop_vs_topspin.gif", tags:["Cambio de ritmo","Trayectoria rara"]
+  },
+  {
+    title:"Punch contra topspin",
+    text:"El golpe seco puede matar la pelota. Parece fácil, pero llega sin energía, con una rotación incómoda y te hace fallar por exceso.",
+    gif:"https://gregsttpages.com/wp-content/uploads/2018/05/lp_punch_vs_topspin_1.gif", tags:["Bola muerta","Bloque activo"]
+  },
+  {
+    title:"Punch contra backspin",
+    text:"Contra backspin, el punch con picos largos puede devolver una bola extraña: ni tan cortada ni tan viva. Ahí se gana por lectura, no por fuerza.",
+    gif:"https://gregsttpages.com/wp-content/uploads/2018/05/lp_punch_vs_backspin.gif", tags:["Lectura","Control"]
+  }
+];
+const buttons=[...document.querySelectorAll(".controls button")];
+const title=document.getElementById("caseTitle"), text=document.getElementById("caseText"), gif=document.getElementById("caseGif"), tagA=document.getElementById("tagA"), tagB=document.getElementById("tagB");
+buttons.forEach(btn=>btn.addEventListener("click",()=>{
+  buttons.forEach(b=>b.classList.remove("active")); btn.classList.add("active");
+  const c=cases[+btn.dataset.case]; title.textContent=c.title; text.textContent=c.text; gif.src=c.gif; tagA.textContent=c.tags[0]; tagB.textContent=c.tags[1];
+}));
+const qs=[...document.querySelectorAll(".q")]; let qi=0, score=0;
+document.querySelectorAll(".options button").forEach(btn=>btn.addEventListener("click",()=>{
+  const ok=btn.dataset.ok==="1"; if(ok) score++;
+  const res=document.getElementById("result");
+  res.innerHTML=ok?'<span class="good">Correcto.</span>':'<span class="bad">No. Esa es la trampa clásica.</span>';
+  setTimeout(()=>{ qs[qi].classList.remove("active"); qi++; if(qi<qs.length){qs[qi].classList.add("active"); res.textContent="";} else {res.innerHTML=`Resultado: ${score}/3. ${score===3?"Ya puedes enfrentarte al señor de la pala maldita.":"Repasa las animaciones y prueba otra vez."}`;} },900);
+}));
+</script>
+</body>
+</html>
