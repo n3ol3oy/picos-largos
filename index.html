@@ -1,263 +1,72 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#061427">
-<title>Picos largos: la física detrás de la magia</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f2f0e8">
+<title>Long Pips — Read the Spin</title>
 <style>
-:root {
-  --bg:#061427; --panel:#0d203b; --panel2:#112948; --text:#f5f7fb; --muted:#aec0d6;
-  --cyan:#60f0ff; --pink:#ff4fd8; --lime:#a8ff60; --amber:#ffd166; --red:#ff6b6b;
-  --line:rgba(255,255,255,.13); --shadow:0 20px 70px rgba(0,0,0,.35);
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-  background:
-    radial-gradient(circle at 15% 10%, rgba(96,240,255,.22), transparent 32%),
-    radial-gradient(circle at 82% 6%, rgba(255,79,216,.20), transparent 28%),
-    radial-gradient(circle at 50% 100%, rgba(168,255,96,.13), transparent 28%),
-    var(--bg);
-  color:var(--text); line-height:1.65; overflow-x:hidden;
-}
-body:before{
-  content:""; position:fixed; inset:0; pointer-events:none; opacity:.18;
-  background-image:linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);
-  background-size:42px 42px; mask-image:linear-gradient(to bottom, black, transparent 85%);
-}
-a{color:inherit}
-.wrap{width:min(1120px, calc(100% - 34px)); margin:auto}
-.hero{min-height:92vh; display:grid; place-items:center; padding:64px 0 30px; position:relative}
-.badge{display:inline-flex;gap:10px;align-items:center;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.07);color:var(--muted);backdrop-filter:blur(10px)}
-.ping{width:10px;height:10px;border-radius:50%;background:var(--lime);box-shadow:0 0 20px var(--lime)}
-h1{font-size:clamp(3rem,8vw,7.6rem);line-height:.92;margin:24px 0 18px;letter-spacing:-.08em;max-width:980px}
-.grad{background:linear-gradient(100deg,var(--cyan),#fff,var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
-.lead{font-size:clamp(1.1rem,2.2vw,1.45rem);max-width:780px;color:#dbe7f7;margin-bottom:28px}
-.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:26px;align-items:center}
-.panel{background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.045));border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);backdrop-filter:blur(16px)}
-.quick{padding:24px}
-.quick strong{color:var(--lime)}
-.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
-.btn{border:1px solid var(--line);border-radius:999px;padding:12px 18px;text-decoration:none;background:rgba(255,255,255,.08);font-weight:800}
-.btn.primary{background:linear-gradient(90deg,var(--cyan),var(--pink));color:#061427;border:0}
-.table-demo{position:relative;min-height:360px;overflow:hidden}
-.ball{position:absolute;width:46px;height:46px;border-radius:50%;background:radial-gradient(circle at 30% 28%,#fff,#d7fbff 45%,#77e6ee 65%,#1a7b8a);box-shadow:0 0 30px rgba(96,240,255,.55);animation:fly 3.2s ease-in-out infinite}
-.racket{position:absolute;width:34px;height:190px;border-radius:18px;background:linear-gradient(90deg,#111,#ef3e3e 48%,#ffd166 52%,#442b15);transform:rotate(-18deg);right:18%;top:90px;box-shadow:0 14px 30px rgba(0,0,0,.35)}
-.spin{position:absolute;left:18%;top:54%;color:var(--cyan);font-weight:900;font-size:64px;animation:spin 1.2s linear infinite}
-@keyframes fly{0%{left:10%;top:70%}45%{left:70%;top:34%}100%{left:10%;top:70%}}
-@keyframes spin{to{transform:rotate(360deg)}}
-nav{position:sticky;top:0;z-index:20;background:rgba(6,20,39,.74);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
-nav .wrap{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 0}
-.navlinks{display:flex;gap:8px;overflow:auto}
-.navlinks a{white-space:nowrap;text-decoration:none;color:var(--muted);font-weight:700;padding:8px 12px;border-radius:999px}
-.navlinks a:hover{background:rgba(255,255,255,.09);color:#fff}
-section{padding:70px 0}
-.kicker{color:var(--cyan);font-weight:900;letter-spacing:.14em;text-transform:uppercase;font-size:.78rem}
-h2{font-size:clamp(2rem,4vw,4rem);line-height:1;margin:.25em 0 .35em;letter-spacing:-.05em}
-.sub{font-size:1.12rem;color:var(--muted);max-width:760px}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:28px}
-.mini{padding:22px;border-radius:24px;background:rgba(255,255,255,.07);border:1px solid var(--line)}
-.mini b{font-size:1.15rem;color:#fff}
-.mini span{display:block;color:var(--muted);margin-top:8px}
-.lab{display:grid;grid-template-columns:.88fr 1.12fr;gap:22px;align-items:start;margin-top:30px}
-.controls{padding:22px;position:sticky;top:78px}
-.controls button{width:100%;text-align:left;margin:8px 0;padding:14px 16px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--text);font-weight:850;cursor:pointer;font-size:.98rem}
-.controls button.active{background:linear-gradient(90deg,rgba(96,240,255,.25),rgba(255,79,216,.22));border-color:rgba(96,240,255,.5)}
-.viewer{padding:24px;min-height:620px}
-.viewer img{width:100%;border-radius:18px;background:#fff;border:1px solid rgba(255,255,255,.18)}
-.viewer h3{font-size:2rem;line-height:1.05;margin:14px 0 8px;color:#fff}
-.tagrow{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 18px}
-.tag{font-size:.78rem;font-weight:900;text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:5px 9px;color:var(--amber);background:rgba(255,209,102,.08)}
-.truth{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:24px}
-.truth div{padding:18px;border-radius:22px;background:rgba(255,255,255,.07);border:1px solid var(--line)}
-.truth b{color:var(--lime)}
-.quiz{padding:26px;margin-top:28px}
-.q{display:none}
-.q.active{display:block}
-.options{display:grid;gap:10px;margin-top:14px}
-.options button{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.06);color:var(--text);padding:14px;text-align:left;cursor:pointer;font-weight:750}
-.result{margin-top:15px;font-weight:900;min-height:28px}
-.good{color:var(--lime)} .bad{color:var(--red)}
-.footer{padding:52px 0 70px;text-align:center;color:var(--muted)}
-.morrie{font-size:1.1rem;color:#fff;font-weight:900}
-@media(max-width:860px){
- .hero-grid,.lab,.cards,.truth{grid-template-columns:1fr}
- .controls{position:relative;top:auto}
- .hero{min-height:auto}
- .table-demo{min-height:280px}
- h1{font-size:clamp(3rem,16vw,5rem)}
-}
+:root{--paper:#f2f0e8;--ink:#17211b;--green:#125c3f;--red:#e53b2f;--blue:#1464ad;--line:#17211b;--muted:#68736c;--white:#fffef9;--shadow:6px 6px 0 var(--ink)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;overflow-x:hidden}button,input{font:inherit}a{color:inherit}.wrap{width:min(1040px,calc(100% - 32px));margin:auto}
+.entry{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:20px;background:var(--green);transition:opacity .35s,visibility .35s}.entry.done{opacity:0;visibility:hidden}.entry-card{width:min(600px,100%);background:var(--paper);border:3px solid var(--ink);padding:clamp(24px,6vw,48px);box-shadow:10px 10px 0 var(--ink);position:relative}.entry-ball{position:absolute;right:28px;top:26px;width:44px;height:44px;border-radius:50%;background:var(--white);border:3px solid var(--ink);box-shadow:4px 4px 0 var(--red)}.eyebrow{font-weight:900;text-transform:uppercase;letter-spacing:.12em;font-size:.75rem;color:var(--red)}.language-title{overflow:hidden;white-space:nowrap;margin:18px -2px 26px;mask-image:linear-gradient(90deg,#000 0,#000 70%,transparent 100%)}.language-title h1{display:inline-block;font-family:Arial,sans-serif;font-size:clamp(2.4rem,9vw,5rem);line-height:.95;letter-spacing:-.07em;margin:0;animation:language-drift 14s linear infinite}.language-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.language-list button{display:flex;align-items:center;justify-content:space-between;gap:12px;border:3px solid var(--ink);background:var(--white);padding:12px 14px;color:var(--ink);cursor:pointer;font-weight:900;text-align:start}.language-list button:after{content:"→";color:var(--red)}.language-list button:hover,.language-list button:focus-visible{background:#ffd84d;box-shadow:4px 4px 0 var(--ink);transform:translate(-2px,-2px);outline:0}.language-list button:first-child{grid-column:1/-1;background:var(--red);color:white}.language-list button:first-child:after{color:white}
+.site{opacity:0;transition:opacity .4s}.site.ready{opacity:1}nav{position:sticky;top:0;z-index:20;background:rgba(242,240,232,.94);border-bottom:3px solid var(--ink)}nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:58px}.brand{font-family:Arial,sans-serif;font-weight:1000;letter-spacing:-.05em;font-size:1.2rem}.brand i{display:inline-block;width:13px;height:13px;border-radius:50%;background:var(--red);border:2px solid var(--ink);vertical-align:1px}.navlinks{display:flex;gap:4px;overflow:auto}.navlinks a{text-decoration:none;font-size:.76rem;font-weight:900;text-transform:uppercase;padding:8px}.navlinks a:hover{background:var(--ink);color:var(--white)}
+.hero{padding:clamp(55px,10vw,110px) 0 70px;border-bottom:3px solid var(--ink)}.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center}.badge{display:inline-block;border:2px solid var(--ink);padding:5px 9px;background:var(--white);font-size:.72rem;font-weight:900;text-transform:uppercase}.hero h1{font-family:Arial,sans-serif;font-size:clamp(3.8rem,9vw,7.8rem);line-height:.82;letter-spacing:-.085em;margin:24px 0}.hero h1 span{color:var(--red)}.lead{font-size:clamp(1rem,2vw,1.25rem);max-width:650px}.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}.btn{display:inline-block;text-decoration:none;border:3px solid var(--ink);padding:11px 16px;font-weight:900;background:var(--white);box-shadow:4px 4px 0 var(--ink)}.btn.primary{background:var(--red);color:white}.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+.table-demo{aspect-ratio:1/1;position:relative;background:var(--blue);border:3px solid var(--ink);box-shadow:var(--shadow);overflow:hidden;transform:rotate(2deg)}.table-demo:before{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:3px solid var(--white)}.table-demo:after{content:"";position:absolute;left:0;right:0;top:50%;border-top:7px solid var(--ink);box-shadow:0 3px 0 var(--white)}.ball{position:absolute;z-index:3;width:38px;height:38px;border-radius:50%;background:var(--white);border:3px solid var(--ink);animation:bounce 2.4s ease-in-out infinite}.paddle{position:absolute;z-index:2;width:92px;height:92px;border-radius:50%;background:var(--red);border:4px solid var(--ink);right:9%;top:13%;transform:rotate(-20deg)}.paddle:after{content:"";position:absolute;width:28px;height:85px;background:#d19a5c;border:4px solid var(--ink);left:30px;top:75px}.spin{position:absolute;z-index:4;left:12%;bottom:8%;color:var(--white);font:900 2rem Arial}.country-chip{border:2px solid var(--ink);background:var(--white);padding:5px 8px;font-size:.7rem;font-weight:900;text-transform:uppercase;white-space:nowrap;cursor:pointer}
+@keyframes bounce{0%,100%{left:8%;top:72%}50%{left:67%;top:22%}}
+@keyframes language-drift{0%,12%{transform:translateX(0)}88%,100%{transform:translateX(-28%)}}
+section{padding:clamp(55px,8vw,90px) 0;border-bottom:3px solid var(--ink)}.kicker{font-weight:900;text-transform:uppercase;letter-spacing:.15em;font-size:.73rem;color:var(--red)}h2{font-family:Arial,sans-serif;font-size:clamp(2.5rem,6vw,5.2rem);line-height:.9;letter-spacing:-.065em;margin:12px 0 20px;max-width:860px}.sub{max-width:720px;font-size:1.05rem}.cards,.truth{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:32px}.mini,.truth>div{border:3px solid var(--ink);padding:22px;background:var(--white);box-shadow:4px 4px 0 var(--ink)}.mini:nth-child(2){background:#ffd84d}.mini:nth-child(3){background:#cde9dd}.mini b,.truth b{font-family:Arial,sans-serif;font-size:1.08rem}.mini span{display:block;margin-top:10px}.lab{display:grid;grid-template-columns:.75fr 1.25fr;gap:24px;margin-top:35px}.controls{display:grid;gap:9px;align-content:start}.controls button{border:3px solid var(--ink);background:var(--white);padding:13px;text-align:start;font-weight:900;cursor:pointer}.controls button.active{background:var(--red);color:white;box-shadow:4px 4px 0 var(--ink);transform:translate(-2px,-2px)}.viewer{border:3px solid var(--ink);background:var(--white);padding:20px;box-shadow:var(--shadow)}.viewer img{display:block;width:100%;margin-top:18px;border:2px solid var(--ink);background:white}.viewer h3{font-family:Arial,sans-serif;font-size:clamp(1.7rem,4vw,3rem);line-height:1;margin:14px 0 10px}.tagrow{display:flex;gap:7px;flex-wrap:wrap}.tag{background:#ffd84d;border:2px solid var(--ink);padding:3px 7px;font-size:.7rem;font-weight:900;text-transform:uppercase}.truth{grid-template-columns:repeat(2,1fr)}.truth>div:nth-child(odd){background:#cde9dd}.quiz{border:3px solid var(--ink);background:#ffd84d;padding:clamp(20px,5vw,38px);box-shadow:var(--shadow);margin-top:30px}.q{display:none}.q.active{display:block}.q h3{font-family:Arial,sans-serif;font-size:clamp(1.35rem,3vw,2rem);line-height:1.15}.options{display:grid;gap:10px;margin-top:20px}.options button{border:3px solid var(--ink);background:var(--white);padding:13px;text-align:start;font-weight:800;cursor:pointer}.options button:hover{background:var(--ink);color:white}.result{font-weight:900;min-height:28px;margin-top:16px}.good{color:var(--green)}.bad{color:var(--red)}footer{background:var(--ink);color:var(--white);padding:50px 0;text-align:center}.morrie{font-weight:900}
+[dir="rtl"] .hero-grid,[dir="rtl"] .lab{direction:rtl}[dir="rtl"] .controls button,[dir="rtl"] .options button{text-align:right}
+@media(max-width:760px){.wrap{width:min(100% - 24px,1040px)}.hero-grid,.lab,.cards,.truth{grid-template-columns:1fr}.hero-grid{gap:40px}.table-demo{width:min(86vw,390px);justify-self:center}.navlinks{display:none}.hero{padding-top:48px}.hero h1{font-size:clamp(3.5rem,19vw,6rem)}.cards,.truth{gap:12px}.viewer{box-shadow:4px 4px 0 var(--ink)}.controls{grid-template-columns:repeat(2,1fr)}.controls button{font-size:.73rem;padding:10px}.entry-card{padding:24px}.entry-ball{width:34px;height:34px;right:18px;top:18px}.language-list{grid-template-columns:1fr}.language-list button:first-child{grid-column:auto}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}.ball,.language-title h1{animation:none}.entry,.site{transition:none}}
 </style>
 </head>
 <body>
-<nav>
-  <div class="wrap">
-    <strong>🏓 Picos largos</strong>
-    <div class="navlinks">
-      <a href="#idea">Idea</a><a href="#lab">Laboratorio</a><a href="#jugar">Cómo jugar</a><a href="#quiz">Mini test</a>
+<div class="entry" id="entry">
+  <div class="entry-card">
+    <div class="entry-ball"></div><div class="eyebrow">🏓 Long Pips Club</div>
+    <div class="language-title"><h1>Language / Idioma / Idioma / Język / Langue / Sprache / زبان / 言語</h1></div>
+    <div class="language-list" id="languageList" aria-label="Choose a language">
+      <button data-lang="en" lang="en">English</button>
+      <button data-lang="es" lang="es">Español</button>
+      <button data-lang="ca" lang="ca">Català</button>
+      <button data-lang="pl" lang="pl">Polski</button>
+      <button data-lang="fr" lang="fr">Français</button>
+      <button data-lang="de" lang="de">Deutsch</button>
+      <button data-lang="fa" lang="fa" dir="rtl">فارسی</button>
+      <button data-lang="ja" lang="ja">日本語</button>
     </div>
   </div>
-</nav>
-
-<header class="hero">
-  <div class="wrap hero-grid">
-    <div>
-      <div class="badge"><span class="ping"></span> Guía visual rápida para el club</div>
-      <h1>La física detrás de <span class="grad">la bola muerta</span></h1>
-      <p class="lead">Los picos largos no son brujería. Son una forma brutalmente elegante de devolverle al rival su propio efecto, deformado, reducido o invertido.</p>
-      <div class="cta">
-        <a class="btn primary" href="#lab">Ver las 6 animaciones</a>
-        <a class="btn" href="#jugar">Cómo jugar contra ellos</a>
-      </div>
-    </div>
-    <div class="panel table-demo" aria-label="Animación decorativa de ping pong">
-      <div class="ball"></div><div class="racket"></div><div class="spin">↻</div>
-    </div>
-  </div>
-</header>
-
+</div>
+<div class="site" id="site">
+<nav><div class="wrap"><div class="brand"><i></i> <span data-t="brand"></span></div><div class="navlinks"><a href="#idea" data-t="navIdea"></a><a href="#lab" data-t="navLab"></a><a href="#play" data-t="navPlay"></a><a href="#quiz" data-t="navQuiz"></a></div><button class="country-chip" id="changeCountry" aria-label="Change language"></button></div></nav>
+<header class="hero"><div class="wrap hero-grid"><div><div class="badge" data-t="badge"></div><h1 data-html="heroTitle"></h1><p class="lead" data-t="lead"></p><div class="cta"><a class="btn primary" href="#lab" data-t="cta1"></a><a class="btn" href="#play" data-t="cta2"></a></div></div><div class="table-demo" role="img" aria-label="Table tennis illustration"><div class="ball"></div><div class="paddle"></div><div class="spin">TOP ↻</div></div></div></header>
 <main>
-<section id="idea">
-  <div class="wrap">
-    <div class="kicker">La regla madre</div>
-    <h2>No crean magia. Responden al efecto.</h2>
-    <p class="sub">Piensa en los picos largos como una goma que no “agarra” la pelota como una lisa. Los picos se doblan, absorben parte de la energía y cambian la rotación que vuelve a tu lado.</p>
-    <div class="cards">
-      <div class="mini"><b>Topspin entra</b><span>Muchas veces vuelve como backspin. Por eso tu siguiente ataque se va a la red.</span></div>
-      <div class="mini"><b>Backspin entra</b><span>La devolución puede salir más flotante o rara, no necesariamente más cortada.</span></div>
-      <div class="mini"><b>Poco efecto entra</b><span>Normalmente vuelve poco efecto. La bola parece muerta: lenta, baja, incómoda.</span></div>
-    </div>
-  </div>
-</section>
-
-<section id="lab">
-  <div class="wrap">
-    <div class="kicker">Laboratorio visual</div>
-    <h2>Seis situaciones clave</h2>
-    <p class="sub">Pulsa cada caso. La animación muestra qué pasa cuando la bola toca los picos.</p>
-    <div class="lab">
-      <aside class="panel controls">
-        <button class="active" data-case="0">1. Corte contra topspin</button>
-        <button data-case="1">2. Corte contra backspin</button>
-        <button data-case="2">3. Ataque contra backspin</button>
-        <button data-case="3">4. Ataque contra topspin</button>
-        <button data-case="4">5. Punch contra topspin</button>
-        <button data-case="5">6. Punch contra backspin</button>
-      </aside>
-      <article class="panel viewer">
-        <div class="tagrow"><span class="tag" id="tagA">Inversión</span><span class="tag" id="tagB">Lectura de efecto</span></div>
-        <h3 id="caseTitle">Corte contra topspin</h3>
-        <p id="caseText">Mandas una bola con topspin. El rival corta o bloquea con picos largos. La bola vuelve con backspin: no la levantes como si fuera una bola normal.</p>
-        <img id="caseGif" src="https://gregsttpages.com/wp-content/uploads/2018/05/lp_chop_vs_topspin_6.gif" alt="Animación de picos largos">
-      </article>
-    </div>
-  </div>
-</section>
-
-<section id="jugar">
-  <div class="wrap">
-    <div class="kicker">Plan práctico</div>
-    <h2>Cómo no morir contra picos largos</h2>
-    <p class="sub">El error típico es enfadarse con la goma. Error. La goma solo revela que no estabas leyendo tu propio efecto.</p>
-    <div class="truth">
-      <div><b>1. Empieza simple.</b><br>Usa bolas más planas y con menos efecto. Así recibes menos “sorpresa”.</div>
-      <div><b>2. No ataques automático.</b><br>Si acabas de meter mucho topspin, espera una bola cortada o muerta.</div>
-      <div><b>3. Mira la trayectoria.</b><br>Bola flotante = no necesita tanto levantamiento. Bola cortada = abre más la pala.</div>
-      <div><b>4. Cambia ritmo, no ego.</b><br>Lento, corto, profundo, plano. Hazle pensar. No le regales tu efecto favorito.</div>
-    </div>
-  </div>
-</section>
-
-<section id="quiz">
-  <div class="wrap">
-    <div class="kicker">Mini test</div>
-    <h2>¿Lo has pillado?</h2>
-    <div class="panel quiz">
-      <div class="q active">
-        <h3>Si haces mucho topspin y el rival bloquea con picos largos, ¿qué deberías esperar?</h3>
-        <div class="options">
-          <button data-ok="0">Una bola con más topspin todavía</button>
-          <button data-ok="1">Una bola cortada o muerta que puede caer a la red</button>
-          <button data-ok="0">Una bola igual que con goma lisa</button>
-        </div>
-      </div>
-      <div class="q">
-        <h3>¿Qué pasa si envías una bola casi sin efecto?</h3>
-        <div class="options">
-          <button data-ok="1">Normalmente vuelve con poco efecto</button>
-          <button data-ok="0">Siempre vuelve con muchísimo efecto</button>
-          <button data-ok="0">Siempre vuelve imposible de leer</button>
-        </div>
-      </div>
-      <div class="q">
-        <h3>La mejor primera estrategia contra picos largos es...</h3>
-        <div class="options">
-          <button data-ok="0">Atacar más fuerte cada bola</button>
-          <button data-ok="0">Quejarte de la pala</button>
-          <button data-ok="1">Bajar el efecto, variar el ritmo y leer la devolución</button>
-        </div>
-      </div>
-      <div class="result" id="result"></div>
-    </div>
-  </div>
-</section>
-</main>
-
-<footer class="footer">
-  <div class="wrap">
-    <p class="morrie">Prepared by Morrie</p>
-    <p>Resumen educativo de una explicación técnica sobre picos largos. Hecho para aprender, jugar mejor y dejar de culpar a la goma.</p>
-  </div>
-</footer>
-
+<section id="idea"><div class="wrap"><div class="kicker" data-t="ideaK"></div><h2 data-t="ideaH"></h2><p class="sub" data-t="ideaP"></p><div class="cards" id="cards"></div></div></section>
+<section id="lab"><div class="wrap"><div class="kicker" data-t="labK"></div><h2 data-t="labH"></h2><p class="sub" data-t="labP"></p><div class="lab"><aside class="controls" id="controls"></aside><article class="viewer"><div class="tagrow"><span class="tag" id="tagA"></span><span class="tag" id="tagB"></span></div><h3 id="caseTitle"></h3><p id="caseText"></p><img id="caseGif" alt="Long pips demonstration"></article></div></div></section>
+<section id="play"><div class="wrap"><div class="kicker" data-t="playK"></div><h2 data-t="playH"></h2><p class="sub" data-t="playP"></p><div class="truth" id="truth"></div></div></section>
+<section id="quiz"><div class="wrap"><div class="kicker" data-t="quizK"></div><h2 data-t="quizH"></h2><div class="quiz"><div id="questions"></div><div class="result" id="result"></div></div></div></section>
+</main><footer><div class="wrap"><p class="morrie">Prepared by Morrie</p><p data-t="footer"></p></div></footer>
+</div>
 <script>
-const cases = [
-  {
-    title:"Corte contra topspin",
-    text:"Mandas una bola con topspin. El rival corta o bloquea con picos largos. La bola vuelve con backspin: no la levantes como si fuera una bola normal.",
-    gif:"https://gregsttpages.com/wp-content/uploads/2018/05/lp_chop_vs_topspin_6.gif", tags:["Inversión","Topspin → Backspin"]
-  },
-  {
-    title:"Corte contra backspin",
-    text:"Mandas una bola cortada. Los picos se doblan y reducen parte del efecto. La pelota puede volver más flotante de lo que tu cerebro espera.",
-    gif:"https://gregsttpages.com/wp-content/uploads/2018/05/lp_chop_vs_backspin_1.gif", tags:["Reducción","Backspin"]
-  },
-  {
-    title:"Ataque contra backspin",
-    text:"Los picos largos también pueden atacar. Contra una bola cortada, el golpe puede salir bajo, plano y muy incómodo.",
-    gif:"https://gregsttpages.com/wp-content/uploads/2018/05/lp_loop_vs_backspin.gif", tags:["Ataque","Bola baja"]
-  },
-  {
-    title:"Ataque contra topspin",
-    text:"Contra topspin, el ataque con picos largos cambia la trayectoria y quita vida a la bola. No esperes el rebote limpio de una goma lisa.",
-    gif:"https://gregsttpages.com/wp-content/uploads/2018/05/lp_loop_vs_topspin.gif", tags:["Cambio de ritmo","Trayectoria rara"]
-  },
-  {
-    title:"Punch contra topspin",
-    text:"El golpe seco puede matar la pelota. Parece fácil, pero llega sin energía, con una rotación incómoda y te hace fallar por exceso.",
-    gif:"https://gregsttpages.com/wp-content/uploads/2018/05/lp_punch_vs_topspin_1.gif", tags:["Bola muerta","Bloque activo"]
-  },
-  {
-    title:"Punch contra backspin",
-    text:"Contra backspin, el punch con picos largos puede devolver una bola extraña: ni tan cortada ni tan viva. Ahí se gana por lectura, no por fuerza.",
-    gif:"https://gregsttpages.com/wp-content/uploads/2018/05/lp_punch_vs_backspin.gif", tags:["Lectura","Control"]
-  }
-];
-const buttons=[...document.querySelectorAll(".controls button")];
-const title=document.getElementById("caseTitle"), text=document.getElementById("caseText"), gif=document.getElementById("caseGif"), tagA=document.getElementById("tagA"), tagB=document.getElementById("tagB");
-buttons.forEach(btn=>btn.addEventListener("click",()=>{
-  buttons.forEach(b=>b.classList.remove("active")); btn.classList.add("active");
-  const c=cases[+btn.dataset.case]; title.textContent=c.title; text.textContent=c.text; gif.src=c.gif; tagA.textContent=c.tags[0]; tagB.textContent=c.tags[1];
-}));
-const qs=[...document.querySelectorAll(".q")]; let qi=0, score=0;
-document.querySelectorAll(".options button").forEach(btn=>btn.addEventListener("click",()=>{
-  const ok=btn.dataset.ok==="1"; if(ok) score++;
-  const res=document.getElementById("result");
-  res.innerHTML=ok?'<span class="good">Correcto.</span>':'<span class="bad">No. Esa es la trampa clásica.</span>';
-  setTimeout(()=>{ qs[qi].classList.remove("active"); qi++; if(qi<qs.length){qs[qi].classList.add("active"); res.textContent="";} else {res.innerHTML=`Resultado: ${score}/3. ${score===3?"Ya puedes enfrentarte al señor de la pala maldita.":"Repasa las animaciones y prueba otra vez."}`;} },900);
-}));
+const en={brand:"LONG PIPS",navIdea:"The idea",navLab:"Lab",navPlay:"Game plan",navQuiz:"Quiz",badge:"A quick visual club guide",heroTitle:'Read the spin.<br><span>Beat the pips.</span>',lead:"Long pips are not magic. They return your own spin—changed, reduced or reversed.",cta1:"See the 6 shots",cta2:"How to play them",ideaK:"The golden rule",ideaH:"They don't create magic. They react to spin.",ideaP:"Long pips do not grip the ball like smooth rubber. The pips bend, absorb energy and change the rotation coming back to you.",cards:[["Topspin goes in","It often comes back as backspin. That is why your next attack finds the net."],["Backspin goes in","The return may be flatter or floatier—not necessarily more chopped."],["Little spin goes in","Usually, little spin comes back. The ball feels dead: slow, low and awkward."]],labK:"Visual lab",labH:"Six shots to know",labP:"Tap a shot. The animation shows what happens when the ball meets the pips.",cases:[["Chop vs topspin","You send topspin. The long-pips block or chop returns backspin. Do not lift it like a normal ball.","Reversal","Topspin → Backspin"],["Chop vs backspin","You send backspin. The pips bend and reduce some rotation. The return may float more than expected.","Reduction","Backspin"],["Attack vs backspin","Long pips can attack too. Against backspin, the shot can stay low, flat and awkward.","Attack","Low ball"],["Attack vs topspin","Against topspin, a long-pips attack changes the path and takes life out of the ball.","Rhythm change","Odd path"],["Punch vs topspin","The punch can kill the pace. It arrives with little energy and uncomfortable rotation.","Dead ball","Active block"],["Punch vs backspin","The return can be neither very chopped nor lively. Win with reading, not force.","Reading","Control"]],playK:"Practical plan",playH:"How to survive long pips",playP:"Do not get angry with the rubber. It is only showing you that you were not reading your own spin.",truth:[["1. Start simple.","Use flatter balls with less spin. You will get fewer surprises back."],["2. Do not auto-attack.","After heavy topspin, expect a chopped or dead ball."],["3. Watch the flight.","Floaty ball: lift less. Chopped ball: open the racket more."],["4. Change rhythm, not ego.","Slow, short, deep, flat. Make them think."]],quizK:"Mini test",quizH:"Got it?",quiz:[["You play heavy topspin and they block with long pips. What comes back?",["Even more topspin","A chopped or dead ball","The same ball as smooth rubber"],1],["What if you send almost no spin?",["Usually, little spin comes back","It always returns huge spin","It becomes unreadable every time"],0],["The best first strategy is…",["Attack every ball harder","Blame the racket","Use less spin, vary rhythm and read the return"],2]],correct:"Correct.",wrong:"That is the classic trap.",result:"Score: {score}/3",footer:"Learn the spin. Play the ball. Stop blaming the rubber."};
+const translations={en,
+es:{brand:"PICOS LARGOS",navIdea:"La idea",navLab:"Laboratorio",navPlay:"Plan de juego",navQuiz:"Test",badge:"Guía visual rápida para el club",heroTitle:'Lee el efecto.<br><span>Gana a los picos.</span>',lead:"Los picos largos no son magia. Devuelven tu propio efecto: cambiado, reducido o invertido.",cta1:"Ver los 6 golpes",cta2:"Cómo jugarles",ideaK:"La regla de oro",ideaH:"No crean magia. Responden al efecto.",ideaP:"Los picos largos no agarran la pelota como una goma lisa. Se doblan, absorben energía y cambian la rotación que vuelve.",cards:[["Entra topspin","Suele volver como backspin. Por eso tu siguiente ataque acaba en la red."],["Entra backspin","Puede volver más plana o flotante, no necesariamente más cortada."],["Entra poco efecto","Normalmente vuelve poco efecto. La bola queda muerta: lenta, baja e incómoda."]],labK:"Laboratorio visual",labH:"Seis golpes clave",labP:"Pulsa un golpe. La animación muestra qué ocurre al tocar los picos.",cases:[["Corte contra topspin","Mandas topspin. El bloqueo o corte con picos devuelve backspin. No la levantes como una bola normal.","Inversión","Topspin → Backspin"],["Corte contra backspin","Mandas backspin. Los picos se doblan y reducen rotación. Puede volver más flotante.","Reducción","Backspin"],["Ataque contra backspin","Los picos también atacan. Contra backspin, el golpe sale bajo, plano e incómodo.","Ataque","Bola baja"],["Ataque contra topspin","Cambia la trayectoria y quita vida a la bola.","Cambio de ritmo","Trayectoria rara"],["Punch contra topspin","El golpe seco mata el ritmo. Llega sin energía y con rotación incómoda.","Bola muerta","Bloque activo"],["Punch contra backspin","La devolución no sale muy cortada ni viva. Gana leyendo, no forzando.","Lectura","Control"]],playK:"Plan práctico",playH:"Cómo sobrevivir a los picos",playP:"No te enfades con la goma. Solo revela que no estabas leyendo tu propio efecto.",truth:[["1. Empieza simple.","Usa bolas planas y con menos efecto. Recibirás menos sorpresas."],["2. No ataques automático.","Tras mucho topspin, espera una bola cortada o muerta."],["3. Mira la trayectoria.","Bola flotante: levanta menos. Bola cortada: abre más la pala."],["4. Cambia el ritmo, no el ego.","Lento, corto, profundo, plano. Hazle pensar."]],quizK:"Mini test",quizH:"¿Lo has pillado?",quiz:[["Haces mucho topspin y bloquean con picos. ¿Qué vuelve?",["Más topspin","Una bola cortada o muerta","La misma bola que con goma lisa"],1],["¿Y si mandas casi sin efecto?",["Suele volver poco efecto","Siempre vuelve muchísimo efecto","Siempre es imposible de leer"],0],["La mejor estrategia inicial es…",["Atacar cada bola más fuerte","Culpar a la pala","Bajar el efecto, variar y leer"],2]],correct:"Correcto.",wrong:"Esa es la trampa clásica.",result:"Resultado: {score}/3",footer:"Lee el efecto. Juega la bola. Deja de culpar a la goma."}}
+Object.assign(translations,{ca:{...en,brand:"PICS LLARGS",navIdea:"La idea",navLab:"Laboratori",navPlay:"Pla de joc",navQuiz:"Test",badge:"Guia visual ràpida per al club",heroTitle:'Llegeix l’efecte.<br><span>Guanya els pics.</span>',lead:"Els pics llargs no són màgia. Retornen el teu propi efecte: canviat, reduït o invertit.",cta1:"Veure els 6 cops",cta2:"Com jugar-hi",ideaK:"La regla d’or",ideaH:"No creen màgia. Responen a l’efecte.",ideaP:"Els pics llargs no agafen la pilota com una goma llisa. Es dobleguen, absorbeixen energia i canvien la rotació de tornada.",cards:[["Entra topspin","Sovint torna com a backspin. Per això el teu atac següent va a la xarxa."],["Entra backspin","Pot tornar més plana o flotant, no necessàriament més tallada."],["Entra poc efecte","Normalment torna poc efecte. La pilota queda morta: lenta, baixa i incòmoda."]],labK:"Laboratori visual",labH:"Sis cops clau",labP:"Toca un cop. L’animació mostra què passa quan la pilota troba els pics.",playK:"Pla pràctic",playH:"Com sobreviure als pics llargs",playP:"No t’enfadis amb la goma. Només mostra que no llegies el teu propi efecte.",truth:[["1. Comença simple.","Usa pilotes més planes i amb menys efecte."],["2. No ataquis automàticament.","Després de molt topspin, espera una pilota tallada o morta."],["3. Mira la trajectòria.","Pilota flotant: aixeca menys. Tallada: obre més la pala."],["4. Canvia el ritme, no l’ego.","Lent, curt, profund, pla. Fes-li pensar."]],quizK:"Mini test",quizH:"Ho has entès?",correct:"Correcte.",wrong:"Aquesta és la trampa clàssica.",result:"Resultat: {score}/3",footer:"Llegeix l’efecte. Juga la pilota. No culpis la goma."},
+pl:{...en,brand:"DŁUGIE CZOPY",navIdea:"Zasada",navLab:"Laboratorium",navPlay:"Plan gry",navQuiz:"Quiz",badge:"Krótki wizualny przewodnik klubowy",heroTitle:'Czytaj rotację.<br><span>Pokonaj czopy.</span>',lead:"Długie czopy to nie magia. Oddają twoją rotację — zmienioną, osłabioną lub odwróconą.",cta1:"Zobacz 6 uderzeń",cta2:"Jak z nimi grać",ideaK:"Złota zasada",ideaH:"Nie tworzą magii. Reagują na rotację.",ideaP:"Długie czopy nie chwytają piłki jak gładka okładzina. Uginają się, pochłaniają energię i zmieniają wracającą rotację.",cards:[["Wchodzi topspin","Często wraca jako backspin. Dlatego następny atak ląduje w siatce."],["Wchodzi backspin","Piłka może wrócić bardziej płasko lub bez rotacji."],["Wchodzi mało rotacji","Zwykle wraca mało rotacji. Piłka jest martwa, wolna i niska."]],labK:"Laboratorium",labH:"Sześć ważnych uderzeń",labP:"Wybierz uderzenie. Animacja pokazuje kontakt piłki z czopami.",playK:"Plan praktyczny",playH:"Jak przetrwać długie czopy",playP:"Nie złość się na okładzinę. Ona tylko pokazuje, że nie czytasz własnej rotacji.",truth:[["1. Zacznij prosto.","Graj płasko i z mniejszą rotacją."],["2. Nie atakuj automatycznie.","Po mocnym topspinie oczekuj ciętej lub martwej piłki."],["3. Patrz na tor lotu.","Piłkę bez rotacji podnoś mniej; przyciętą — bardziej otwartą rakietką."],["4. Zmieniaj rytm, nie ego.","Wolno, krótko, głęboko, płasko." ]],quizK:"Mini quiz",quizH:"Rozumiesz?",correct:"Dobrze.",wrong:"To klasyczna pułapka.",result:"Wynik: {score}/3",footer:"Czytaj rotację. Graj piłkę. Nie obwiniaj okładziny."},
+fr:{...en,brand:"PICOS LONGS",navIdea:"Le principe",navLab:"Labo",navPlay:"Plan de jeu",navQuiz:"Quiz",badge:"Guide visuel rapide pour le club",heroTitle:'Lis la rotation.<br><span>Bats les picots.</span>',lead:"Les picots longs ne sont pas magiques. Ils renvoient ton propre effet — modifié, réduit ou inversé.",cta1:"Voir les 6 coups",cta2:"Comment les jouer",ideaK:"La règle d’or",ideaH:"Ils ne créent pas de magie. Ils réagissent à l’effet.",ideaP:"Les picots longs n’accrochent pas la balle comme un revêtement lisse. Ils plient, absorbent l’énergie et modifient la rotation du retour.",cards:[["Le topspin entre","Il revient souvent en backspin. Voilà pourquoi ton attaque suivante va au filet."],["Le backspin entre","Le retour peut être plus plat ou flottant, pas forcément plus coupé."],["Peu d’effet entre","Peu d’effet revient. La balle paraît morte, lente et basse."]],labK:"Labo visuel",labH:"Six coups à connaître",labP:"Choisis un coup. L’animation montre le contact avec les picots.",playK:"Plan pratique",playH:"Comment survivre aux picots longs",playP:"Ne t’énerve pas contre le revêtement. Il montre seulement que tu ne lisais pas ton propre effet.",truth:[["1. Commence simple.","Joue plus à plat et avec moins d’effet."],["2. N’attaque pas automatiquement.","Après un gros topspin, attends une balle coupée ou morte."],["3. Regarde la trajectoire.","Balle flottante : lève moins. Balle coupée : ouvre davantage."],["4. Change le rythme, pas l’ego.","Lent, court, profond, à plat." ]],quizK:"Mini quiz",quizH:"Compris ?",correct:"Correct.",wrong:"C’est le piège classique.",result:"Score : {score}/3",footer:"Lis l’effet. Joue la balle. Arrête d’accuser le revêtement."},
+de:{...en,brand:"LANGE NOPPEN",navIdea:"Die Idee",navLab:"Labor",navPlay:"Spielplan",navQuiz:"Quiz",badge:"Schneller visueller Vereinsguide",heroTitle:'Lies den Spin.<br><span>Schlag die Noppen.</span>',lead:"Lange Noppen sind keine Magie. Sie geben deinen eigenen Spin verändert, reduziert oder umgekehrt zurück.",cta1:"Die 6 Schläge",cta2:"So spielst du sie",ideaK:"Die goldene Regel",ideaH:"Keine Magie. Nur eine Reaktion auf Spin.",ideaP:"Lange Noppen greifen den Ball nicht wie glatter Belag. Sie knicken ein, nehmen Energie auf und verändern den zurückkommenden Spin.",cards:[["Topspin kommt","Er kommt oft als Unterschnitt zurück. Deshalb landet dein nächster Angriff im Netz."],["Unterschnitt kommt","Der Rückball kann flacher oder flatternder sein."],["Wenig Spin kommt","Meist kommt wenig Spin zurück. Der Ball wirkt tot, langsam und tief."]],labK:"Visuelles Labor",labH:"Sechs wichtige Schläge",labP:"Wähle einen Schlag. Die Animation zeigt den Kontakt mit den Noppen.",playK:"Praktischer Plan",playH:"So überlebst du lange Noppen",playP:"Ärgere dich nicht über den Belag. Er zeigt nur, dass du deinen eigenen Spin nicht gelesen hast.",truth:[["1. Einfach anfangen.","Spiele flacher und mit weniger Spin."],["2. Nicht automatisch angreifen.","Nach viel Topspin kommt oft ein unterschnittener oder toter Ball."],["3. Flugbahn beobachten.","Flatterball: weniger heben. Schnittball: Schläger weiter öffnen."],["4. Rhythmus statt Ego.","Langsam, kurz, tief, flach." ]],quizK:"Mini-Quiz",quizH:"Verstanden?",correct:"Richtig.",wrong:"Das ist die klassische Falle.",result:"Ergebnis: {score}/3",footer:"Lies den Spin. Spiel den Ball. Gib nicht dem Belag die Schuld."},
+fa:{...en,brand:"دانه‌بلند",navIdea:"اصل",navLab:"آزمایشگاه",navPlay:"نقشه بازی",navQuiz:"آزمون",badge:"راهنمای تصویری سریع باشگاه",heroTitle:'چرخش را بخوان.<br><span>دانه‌بلند را شکست بده.</span>',lead:"دانه‌بلند جادو نیست. چرخش خودت را تغییر‌یافته، کم‌شده یا معکوس برمی‌گرداند.",cta1:"۶ ضربه را ببین",cta2:"روش بازی",ideaK:"قانون طلایی",ideaH:"جادو نمی‌سازد؛ به چرخش واکنش نشان می‌دهد.",ideaP:"دانه‌بلند مثل رویه صاف توپ را نمی‌گیرد. خم می‌شود، انرژی را جذب می‌کند و چرخش برگشتی را تغییر می‌دهد.",cards:[["تاپ‌اسپین وارد می‌شود","اغلب به بک‌اسپین برمی‌گردد؛ برای همین حمله بعدی به تور می‌خورد."],["بک‌اسپین وارد می‌شود","برگشت ممکن است صاف‌تر یا شناورتر باشد."],["چرخش کم وارد می‌شود","معمولاً چرخش کمی برمی‌گردد. توپ مرده، کند و پایین است."]],labK:"آزمایشگاه تصویری",labH:"شش ضربه مهم",labP:"یک ضربه را بزن. پویانمایی برخورد توپ با دانه‌ها را نشان می‌دهد.",playK:"نقشه عملی",playH:"چطور برابر دانه‌بلند دوام بیاوریم",playP:"از رویه عصبانی نشو. فقط نشان می‌دهد چرخش خودت را نخوانده‌ای.",truth:[["۱. ساده شروع کن.","توپ صاف‌تر و با چرخش کمتر بزن."],["۲. خودکار حمله نکن.","بعد از تاپ‌اسپین زیاد، منتظر توپ کات یا مرده باش."],["۳. مسیر توپ را ببین.","توپ شناور را کمتر بلند کن؛ برای توپ کات راکت را بازتر کن."],["۴. ریتم را عوض کن، نه غرور را.","کند، کوتاه، عمیق و صاف بازی کن."]],quizK:"آزمون کوتاه",quizH:"گرفتی؟",correct:"درست است.",wrong:"این همان دام همیشگی است.",result:"نتیجه: {score}/3",footer:"چرخش را بخوان. توپ را بازی کن. رویه را مقصر ندان."},
+ja:{...en,brand:"粒高",navIdea:"基本",navLab:"ラボ",navPlay:"作戦",navQuiz:"クイズ",badge:"クラブ向け・速習ビジュアルガイド",heroTitle:'回転を読め。<br><span>粒高に勝て。</span>',lead:"粒高は魔法ではありません。あなたの回転を変化・減少・反転させて返します。",cta1:"6つの打法を見る",cta2:"対戦方法",ideaK:"黄金ルール",ideaH:"魔法ではない。回転への反応だ。",ideaP:"粒高は裏ソフトのようにボールをつかみません。粒が倒れ、エネルギーを吸収し、返球の回転を変えます。",cards:[["上回転を送る","下回転で返ることが多く、次の攻撃がネットに落ちやすくなります。"],["下回転を送る","返球はより平らで、ナックル気味になることがあります。"],["回転をかけない","返球も低回転。ボールは遅く、低く、死んだように感じます。"]],labK:"ビジュアルラボ",labH:"覚えるべき6打法",labP:"打法をタップ。粒に当たったときの変化を見てみよう。",playK:"実戦プラン",playH:"粒高を攻略する方法",playP:"ラバーに腹を立てないこと。自分の回転を読めていないだけです。",truth:[["1. シンプルに始める","回転を減らし、フラットに打ちます。"],["2. 自動的に攻撃しない","強い上回転の後は、下回転かナックルを予測。"],["3. 軌道を見る","ナックルは持ち上げすぎず、下回転にはラケットを開く。"],["4. プライドよりリズム","遅く、短く、深く、フラットに。"]],quizK:"ミニクイズ",quizH:"わかった？",correct:"正解。",wrong:"典型的な落とし穴です。",result:"スコア：{score}/3",footer:"回転を読む。ボールを打つ。ラバーのせいにしない。"}});
+const gifs=["lp_chop_vs_topspin_6.gif","lp_chop_vs_backspin_1.gif","lp_loop_vs_backspin.gif","lp_loop_vs_topspin.gif","lp_punch_vs_topspin_1.gif","lp_punch_vs_backspin.gif"].map(x=>"https://gregsttpages.com/wp-content/uploads/2018/05/"+x);
+const languageNames={en:"English",es:"Español",ca:"Català",pl:"Polski",fr:"Français",de:"Deutsch",fa:"فارسی",ja:"日本語"};
+let lang="en",t=en,currentCase=0,qi=0,score=0;
+function localCases(){return t.cases||en.cases}
+function renderCase(i){currentCase=i;const c=localCases()[i];document.querySelectorAll(".controls button").forEach((b,j)=>b.classList.toggle("active",i===j));caseTitle.textContent=c[0];caseText.textContent=c[1];tagA.textContent=c[2];tagB.textContent=c[3];caseGif.src=gifs[i]}
+function renderQuiz(){qi=0;score=0;questions.innerHTML="";(t.quiz||en.quiz).forEach((q,i)=>{const box=document.createElement("div");box.className="q"+(i===0?" active":"");box.innerHTML=`<h3>${q[0]}</h3><div class="options">${q[1].map((a,j)=>`<button data-answer="${j}" data-correct="${q[2]}">${a}</button>`).join("")}</div>`;questions.append(box)});result.textContent="";questions.querySelectorAll("button").forEach(b=>b.onclick=()=>{const ok=b.dataset.answer===b.dataset.correct;if(ok)score++;result.innerHTML=`<span class="${ok?'good':'bad'}">${ok?t.correct:t.wrong}</span>`;setTimeout(()=>{const all=[...document.querySelectorAll(".q")];all[qi].classList.remove("active");qi++;if(qi<all.length){all[qi].classList.add("active");result.textContent=""}else result.textContent=t.result.replace("{score}",score)},650)})}
+function applyLanguage(code){lang=code;t=translations[code]||en;document.documentElement.lang=code;document.documentElement.dir=code==="fa"?"rtl":"ltr";document.querySelectorAll("[data-t]").forEach(el=>el.textContent=t[el.dataset.t]);document.querySelectorAll("[data-html]").forEach(el=>el.innerHTML=t[el.dataset.html]);cards.innerHTML=t.cards.map(x=>`<div class="mini"><b>${x[0]}</b><span>${x[1]}</span></div>`).join("");truth.innerHTML=t.truth.map(x=>`<div><b>${x[0]}</b><br>${x[1]}</div>`).join("");controls.innerHTML=localCases().map((x,i)=>`<button data-i="${i}">${i+1}. ${x[0]}</button>`).join("");controls.querySelectorAll("button").forEach(b=>b.onclick=()=>renderCase(+b.dataset.i));changeCountry.textContent=languageNames[code]||languageNames.en;document.title=`${t.brand} — ${t.ideaH}`;renderCase(0);renderQuiz()}
+languageList.querySelectorAll("button").forEach(button=>button.addEventListener("click",()=>{const code=button.dataset.lang;applyLanguage(code);localStorage.setItem("pipsLanguage",code);entry.classList.add("done");site.classList.add("ready")}));
+changeCountry.onclick=()=>{entry.classList.remove("done");languageList.querySelector(`[data-lang="${lang}"]`)?.focus()};
+const saved=localStorage.getItem("pipsLanguage");if(saved&&translations[saved]){applyLanguage(saved);entry.classList.add("done");site.classList.add("ready")}else applyLanguage("en");
 </script>
 </body>
 </html>
